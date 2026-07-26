@@ -65,7 +65,7 @@ button:active{transform:translateY(3px);box-shadow:inset 0 0 0 2px #fff,0 1px 0 
 const N=8,TYPES=6,$=id=>document.getElementById(id),boardEl=$("board"),bgm=$("bgm");
 let grid=[],selected=null,busy=true,score=0,moves=25,level=1,collected=0,target=18,targetType=0,best=+(localStorage.getItem("tongtong-best")||0),sound=true,music=true,started=false,closed=false,touchStart=null;
 const pos=[["0%","0%"],["50%","0%"],["100%","0%"],["0%","100%"],["50%","100%"],["100%","100%"]];
-bgm.volume=.3;$("best").textContent=best.toLocaleString();
+bgm.volume=.16;$("best").textContent=best.toLocaleString();
 function cell(t,s=null){return{t,s}}
 function key(r,c){return r*N+c}
 function rc(k){return[Math.floor(k/N),k%N]}
@@ -92,7 +92,7 @@ function hint(){const m=hasMove();if(!m)return;for(const p of m){const el=boardE
 function toast(s){const t=$("toast");t.textContent=s;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),1600)}
 function wait(ms){return new Promise(r=>setTimeout(r,ms))}
 function audio(){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;const a=window._tongAudio||(window._tongAudio=new AC());if(a.state==="suspended")a.resume().catch(()=>{});return a}
-function beep(f,d){if(!sound)return;try{const a=audio();if(!a)return;const o=a.createOscillator(),g=a.createGain();o.type="sine";o.frequency.value=f;g.gain.setValueAtTime(.08,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+d);o.connect(g).connect(a.destination);o.start();o.stop(a.currentTime+d)}catch{}}
+function beep(f,d){if(!sound)return;try{const a=audio();if(!a)return;const o=a.createOscillator(),g=a.createGain();o.type="sine";o.frequency.value=f;g.gain.setValueAtTime(.11,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+d);o.connect(g).connect(a.destination);o.start();o.stop(a.currentTime+d)}catch{}}
 function levelUp(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f,.16),i*100))}
 function startMusic(){if(!music||closed||!started)return;const p=bgm.play();if(p?.catch)p.catch(()=>{})}
 function stopMusic(){bgm.pause()}
