@@ -50,7 +50,7 @@ button:active{transform:translateY(3px);box-shadow:inset 0 0 0 2px #fff,0 1px 0 
     <div id="board" class="board" aria-label="彤彤消消樂棋盤"></div>
   </section>
   <aside class="panel right">
-    <div class="objective"><h2>第 <span id="level">1</span> 關</h2><div id="targetIcon" class="target-icon"></div><p>收集草莓兔 <b id="collected">0</b>/<b id="target">18</b></p></div>
+    <div class="objective"><h2>第 <span id="level">1</span> 關</h2><div id="targetIcon" class="target-icon"></div><p>收集<span id="targetName">草莓兔</span> <b id="collected">0</b>/<b id="target">18</b></p></div>
     <div class="tip"><b>玩法</b><br>滑動糖果，讓三個相同角色連成一線。四個以上會產生神奇糖果！</div>
   </aside>
 </main>
@@ -65,6 +65,7 @@ button:active{transform:translateY(3px);box-shadow:inset 0 0 0 2px #fff,0 1px 0 
 const N=8,TYPES=6,$=id=>document.getElementById(id),boardEl=$("board"),bgm=$("bgm");
 let grid=[],selected=null,busy=true,score=0,moves=25,level=1,collected=0,target=18,targetType=0,best=+(localStorage.getItem("tongtong-best")||0),sound=true,music=true,started=false,closed=false,touchStart=null;
 const pos=[["0%","0%"],["50%","0%"],["100%","0%"],["0%","100%"],["50%","100%"],["100%","100%"]];
+const targetNames=["草莓兔","星星糖","青蘋果熊","葡萄貓","橘子狐狸","藍莓企鵝"];
 bgm.volume=.1;$("best").textContent=best.toLocaleString();
 function cell(t,s=null){return{t,s}}
 function key(r,c){return r*N+c}
@@ -73,7 +74,7 @@ function randomType(r,c){let t;do{t=Math.floor(Math.random()*TYPES)}while((c>1&&
 function specialHue(s,t){const target=[0,55,205,280,105,30][t],base=s==="lineH"?335:s==="lineV"?205:s==="bomb"?15:target;let d=target-base;if(d>180)d-=360;if(d<(-180))d+=360;return d+"deg"}
 function makeGrid(){grid=[];for(let r=0;r<N;r++){grid[r]=[];for(let c=0;c<N;c++)grid[r][c]=cell(randomType(r,c))}}
 function render(popSet=new Set()){boardEl.innerHTML="";for(let r=0;r<N;r++)for(let c=0;c<N;c++){const v=grid[r][c],b=document.createElement("button");b.className="tile"+(selected&&selected.r===r&&selected.c===c?" selected":"")+(popSet.has(key(r,c))?" pop":"");b.dataset.r=r;b.dataset.c=c;b.dataset.special=v?.s||"";if(v){b.style.setProperty("--x",pos[v.t][0]);b.style.setProperty("--y",pos[v.t][1]);if(v.s)b.style.setProperty("--special-hue",specialHue(v.s,v.t))}else b.style.visibility="hidden";b.setAttribute("aria-label",v?`糖果 ${v.t+1}`:"空格");boardEl.appendChild(b)}updateUI()}
-function updateUI(){$("score").textContent=score.toLocaleString();$("moves").textContent=moves;$("level").textContent=level;$("collected").textContent=collected;$("target").textContent=target;$("best").textContent=best.toLocaleString();$("bar").style.width=Math.min(100,score/(5000+level*1800)*100)+"%";const stars=Math.min(3,Math.floor(score/(2200+level*500))+1);$("stars").classList.toggle("on",stars>=3)}
+function updateUI(){$("score").textContent=score.toLocaleString();$("moves").textContent=moves;$("level").textContent=level;$("collected").textContent=collected;$("target").textContent=target;$("targetName").textContent=targetNames[targetType];$("best").textContent=best.toLocaleString();$("bar").style.width=Math.min(100,score/(5000+level*1800)*100)+"%";const stars=Math.min(3,Math.floor(score/(2200+level*500))+1);$("stars").classList.toggle("on",stars>=3)}
 function adjacent(a,b){return Math.abs(a.r-b.r)+Math.abs(a.c-b.c)===1}
 function swap(a,b){[grid[a.r][a.c],grid[b.r][b.c]]=[grid[b.r][b.c],grid[a.r][a.c]]}
 function runs(){const out=[];for(let r=0;r<N;r++){let c=0;while(c<N){let e=c+1;while(e<N&&grid[r][e]&&grid[r][c]&&grid[r][e].t===grid[r][c].t)e++;if(e-c>=3)out.push({cells:Array.from({length:e-c},(_,i)=>({r,c:c+i})),dir:"H",t:grid[r][c].t});c=e}}for(let c=0;c<N;c++){let r=0;while(r<N){let e=r+1;while(e<N&&grid[e][c]&&grid[r][c]&&grid[e][c].t===grid[r][c].t)e++;if(e-r>=3)out.push({cells:Array.from({length:e-r},(_,i)=>({r:r+i,c})),dir:"V",t:grid[r][c].t});r=e}}return out}
