@@ -65,7 +65,7 @@ button:active{transform:translateY(3px);box-shadow:inset 0 0 0 2px #fff,0 1px 0 
 const N=8,TYPES=6,$=id=>document.getElementById(id),boardEl=$("board"),bgm=$("bgm");
 let grid=[],selected=null,busy=true,score=0,moves=25,level=1,collected=0,target=18,targetType=0,best=+(localStorage.getItem("tongtong-best")||0),sound=true,music=true,started=false,closed=false,touchStart=null;
 const pos=[["0%","0%"],["50%","0%"],["100%","0%"],["0%","100%"],["50%","100%"],["100%","100%"]];
-bgm.volume=.16;$("best").textContent=best.toLocaleString();
+bgm.volume=.1;$("best").textContent=best.toLocaleString();
 function cell(t,s=null){return{t,s}}
 function key(r,c){return r*N+c}
 function rc(k){return[Math.floor(k/N),k%N]}
