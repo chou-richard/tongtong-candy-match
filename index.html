@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#ff83b6">
+<title>彤彤消消樂</title>
+<style>
+:root{--pink:#ff5c9b;--purple:#6d3db8;--cream:#fff6d8;--ink:#5a275e;--panel:#fff8f0e8}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;overscroll-behavior:none}
+body{font-family:"Microsoft JhengHei","PingFang TC",system-ui,sans-serif;color:var(--ink);background:#ffd7e8 url("tongtong-candy-park.png") center/cover fixed;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;background:linear-gradient(#fff3,#ffd0e355);z-index:-1}
+button{font:inherit;font-weight:900;color:#652b65;border:3px solid #8b3f78;border-radius:18px;background:linear-gradient(#fff8b8,#ffc64d);box-shadow:inset 0 0 0 2px #fff,0 4px 0 #723060;cursor:pointer;touch-action:manipulation}
+button:active{transform:translateY(3px);box-shadow:inset 0 0 0 2px #fff,0 1px 0 #723060}
+.app{width:min(1080px,100%);min-height:100dvh;margin:auto;padding:10px max(8px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left));display:grid;grid-template-columns:220px minmax(320px,560px) 220px;gap:14px;align-items:center}
+.panel,.gamebox{background:var(--panel);border:5px solid #fff;outline:3px solid #d85b9a;border-radius:26px;box-shadow:0 12px 30px #7f3b7180,inset 0 0 24px #fff;padding:14px}
+.brand{text-align:center}.brand small{display:inline-block;color:#f13e88;font-weight:1000;letter-spacing:2px;background:#fff9;border:2px solid #ff9ac5;border-radius:999px;padding:3px 8px;text-shadow:0 1px #fff}.brand h1{position:relative;margin:7px 0 9px;font-family:"Arial Rounded MT Bold","Microsoft JhengHei",sans-serif;font-size:31px;font-weight:1000;line-height:1.12;letter-spacing:1px;color:#ff4f96;-webkit-text-stroke:2px #fff8df;text-shadow:0 3px 0 #f88aba,0 6px 0 #a83d7d,0 9px 12px #72275d88;filter:drop-shadow(0 0 3px #fff)}.brand h1:before,.brand h1:after{content:"✦";position:absolute;top:-8px;color:#ffd94a;-webkit-text-stroke:1px #fff;text-shadow:0 2px #e27a2f;font-size:15px}.brand h1:before{left:2px;transform:rotate(-15deg)}.brand h1:after{right:2px;transform:rotate(15deg)}.mascot{font-size:54px;filter:drop-shadow(0 4px 3px #b75a8b66)}
+.stat{background:#fff9;border:2px solid #f2acd0;border-radius:16px;margin:9px 0;padding:9px}.stat span{display:block;font-size:13px;color:#a14f81}.stat b{display:block;font-size:26px;color:#e8468a}.progress{height:14px;background:#ead8e6;border:2px solid #a85b8e;border-radius:9px;overflow:hidden}.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ff5b9e,#ffd64f);transition:.3s}
+.stars{font-size:26px;letter-spacing:5px;filter:grayscale(1);text-align:center}.stars.on{filter:none}
+.gamebox{padding:10px}.toolbar{display:flex;gap:6px;justify-content:center;margin-bottom:9px;flex-wrap:wrap}.toolbar button{padding:7px 11px;font-size:13px}
+.board{position:relative;width:min(54vw,520px);aspect-ratio:1;display:grid;grid-template-columns:repeat(8,1fr);gap:3px;padding:8px;background:#9e4c88c9;border:5px solid #fff;outline:3px solid #c34e8d;border-radius:24px;box-shadow:inset 0 0 18px #57204b80;touch-action:none;user-select:none}
+.tile{position:relative;min-width:0;border:0;border-radius:16%;background-color:#fff3;box-shadow:inset 0 0 0 2px #fff9,0 2px 2px #54234e55;padding:0;overflow:hidden;transition:transform .15s,opacity .15s}
+.tile:active{transform:none}.tile:before{content:"";position:absolute;inset:3%;background-image:url("tongtong-candy-characters-transparent.png");background-size:300% 200%;background-position:var(--x) var(--y);background-repeat:no-repeat;filter:drop-shadow(0 2px 1px #63244f66)}
+.tile.selected{animation:pulse .55s infinite alternate;outline:4px solid #fff248;z-index:2}.tile.hint{animation:hint .7s 2}.tile.pop{transform:scale(.15) rotate(18deg);opacity:0}
+.tile[data-special=lineH]:after,.tile[data-special=lineV]:after,.tile[data-special=bomb]:after,.tile[data-special=rainbow]:after{content:"";position:absolute;inset:4%;border-radius:18%;background-image:url("tongtong-special-candies-transparent.png");background-size:200% 200%;background-repeat:no-repeat;filter:hue-rotate(var(--special-hue,0deg)) saturate(1.08) drop-shadow(0 2px 2px #67215388);z-index:2}.tile[data-special=lineH]:after{background-position:0 0}.tile[data-special=lineV]:after{background-position:100% 0}.tile[data-special=bomb]:after{background-position:0 100%}.tile[data-special=rainbow]:after{background-position:100% 100%;filter:drop-shadow(0 2px 2px #67215388)}
+.objective{text-align:center}.objective h2{margin:4px;color:#e8468a}.objective p{font-size:14px}.target-icon{width:90px;height:90px;margin:5px auto;border-radius:24px;background:#fff8 url("tongtong-candy-characters-transparent.png") 0 0/300% 200%;box-shadow:inset 0 0 0 3px #fff,0 4px 0 #b24b83}
+.tip{font-size:13px;line-height:1.6;background:#fff9;padding:10px;border-radius:15px;border:2px dashed #e58bb8}
+.modal{position:fixed;inset:0;z-index:20;display:grid;place-items:center;padding:18px;background:#6e2c6499;backdrop-filter:blur(5px)}.modal.hidden{display:none}.card{width:min(480px,94vw);text-align:center;background:linear-gradient(#fffdf5,#ffe1ed);border:6px solid #fff;outline:4px solid #e25396;border-radius:30px;padding:25px;box-shadow:0 20px 60px #57204da0}.card .hero{font-size:76px;animation:float .7s infinite alternate}.card h2{color:#e83f88;font-size:30px;margin:5px}.card p{line-height:1.7}.card button{padding:12px 28px;font-size:18px;margin:5px}
+.toast{position:fixed;z-index:30;top:max(15px,env(safe-area-inset-top));left:50%;transform:translate(-50%,-100px);padding:10px 20px;border-radius:20px;background:#702c63;color:white;font-weight:900;transition:.25s}.toast.show{transform:translate(-50%,0)}
+@keyframes pulse{to{transform:scale(1.09)}}@keyframes hint{50%{transform:scale(1.15);filter:brightness(1.25)}}@keyframes float{to{transform:translateY(-8px) rotate(4deg)}}
+@media(max-width:860px){.app{grid-template-columns:minmax(90px,150px) minmax(300px,520px) minmax(90px,150px);gap:7px}.panel{padding:8px}.brand h1{font-size:20px}.mascot{font-size:38px}.board{width:min(60vw,calc(100dvh - 120px),500px)}}
+@media(max-width:640px) and (orientation:portrait){body{background-position:center top}.app{display:grid;grid-template-columns:54px minmax(0,1fr) 54px;grid-template-rows:auto auto;align-items:start;padding-top:max(5px,env(safe-area-inset-top));gap:4px}.left{grid-column:1;grid-row:1;padding:4px;min-width:0;overflow:hidden}.right{grid-column:3;grid-row:1;padding:4px;min-width:0;overflow:hidden}.gamebox{grid-column:2;grid-row:1;padding:5px;min-width:0}.brand small{display:none}.brand h1{font-size:11px;margin:1px}.mascot{font-size:25px}.stat{padding:3px 1px;margin:4px 0;border-radius:9px}.stat span{font-size:8px}.stat b{font-size:14px}.stars{font-size:13px;letter-spacing:0}.right .tip{display:none}.objective h2{font-size:11px}.objective p{font-size:8px;margin:3px;overflow-wrap:anywhere}.target-icon{width:42px;height:42px;border-radius:12px}.toolbar{gap:3px;margin-bottom:5px}.toolbar button{font-size:9px;padding:5px 3px;border-width:2px;border-radius:9px;flex:1}.board{width:100%;padding:4px;gap:2px;border-width:3px;border-radius:16px}.tile{border-radius:13%}.gamebox{border-width:3px;outline-width:2px;border-radius:18px}}
+@media(max-width:900px) and (orientation:landscape){.app{height:100dvh;padding:4px;grid-template-columns:160px auto 180px}.board{width:min(56vh,43vw)}.panel{padding:7px}.brand h1{font-size:17px}.stat{margin:4px;padding:4px}.stat b{font-size:18px}.mascot{font-size:30px}}
+</style>
+</head>
+<body>
+<main class="app">
+  <aside class="panel left">
+    <div class="brand"><small>TONGTONG'S CANDY MATCH</small><h1>彤彤消消樂</h1><div class="mascot">🍓</div></div>
+    <div class="stat"><span>本關分數</span><b id="score">0</b></div>
+    <div class="stat"><span>剩餘步數</span><b id="moves">25</b></div>
+    <div class="stat"><span>歷史最高</span><b id="best">0</b></div>
+    <div class="progress"><i id="bar"></i></div><div id="stars" class="stars">★★★</div>
+  </aside>
+  <section class="gamebox">
+    <div class="toolbar">
+      <button id="restartBtn">重新開始</button><button id="hintBtn">提示</button><button id="soundBtn">音效:開</button><button id="musicBtn">音樂:開</button><button id="closeBtn">關閉</button>
+    </div>
+    <div id="board" class="board" aria-label="彤彤消消樂棋盤"></div>
+  </section>
+  <aside class="panel right">
+    <div class="objective"><h2>第 <span id="level">1</span> 關</h2><div id="targetIcon" class="target-icon"></div><p>收集草莓兔 <b id="collected">0</b>/<b id="target">18</b></p></div>
+    <div class="tip"><b>玩法</b><br>滑動糖果，讓三個相同角色連成一線。四個以上會產生神奇糖果！</div>
+  </aside>
+</main>
+<div id="startModal" class="modal"><div class="card"><div class="hero">🍭</div><h2>彤彤，出發囉！</h2><p>和可愛糖果夥伴一起點亮糖果遊樂園！滑動或依序點選兩顆相鄰糖果即可交換。</p><button id="startBtn">開始遊戲</button></div></div>
+<div id="winModal" class="modal hidden"><div class="card"><div class="hero">🏰</div><h2>太棒了，過關！</h2><p id="winText"></p><button id="nextBtn">下一關</button><button id="winAgainBtn">再玩一次</button></div></div>
+<div id="loseModal" class="modal hidden"><div class="card"><div class="hero">🍬</div><h2>差一點點！</h2><p>步數用完了，再試一次一定可以！</p><button id="loseAgainBtn">重新挑戰</button></div></div>
+<div id="closedModal" class="modal hidden"><div class="card"><div class="hero">🌙</div><h2>遊戲已關閉</h2><p>音樂與遊戲已停止，現在可以安全關閉瀏覽器。</p><button id="reopenBtn">重新開始</button></div></div>
+<div id="toast" class="toast"></div>
+<audio id="bgm" src="tongtong-candy-bgm.wav" loop preload="auto" playsinline></audio>
+<script>
+(()=>{
+const N=8,TYPES=6,$=id=>document.getElementById(id),boardEl=$("board"),bgm=$("bgm");
+let grid=[],selected=null,busy=true,score=0,moves=25,level=1,collected=0,target=18,targetType=0,best=+(localStorage.getItem("tongtong-best")||0),sound=true,music=true,started=false,closed=false,touchStart=null;
+const pos=[["0%","0%"],["50%","0%"],["100%","0%"],["0%","100%"],["50%","100%"],["100%","100%"]];
+bgm.volume=.3;$("best").textContent=best.toLocaleString();
+function cell(t,s=null){return{t,s}}
+function key(r,c){return r*N+c}
+function rc(k){return[Math.floor(k/N),k%N]}
+function randomType(r,c){let t;do{t=Math.floor(Math.random()*TYPES)}while((c>1&&grid[r]?.[c-1]?.t===t&&grid[r]?.[c-2]?.t===t)||(r>1&&grid[r-1]?.[c]?.t===t&&grid[r-2]?.[c]?.t===t));return t}
+function specialHue(s,t){const target=[0,55,205,280,105,30][t],base=s==="lineH"?335:s==="lineV"?205:s==="bomb"?15:target;let d=target-base;if(d>180)d-=360;if(d<(-180))d+=360;return d+"deg"}
+function makeGrid(){grid=[];for(let r=0;r<N;r++){grid[r]=[];for(let c=0;c<N;c++)grid[r][c]=cell(randomType(r,c))}}
+function render(popSet=new Set()){boardEl.innerHTML="";for(let r=0;r<N;r++)for(let c=0;c<N;c++){const v=grid[r][c],b=document.createElement("button");b.className="tile"+(selected&&selected.r===r&&selected.c===c?" selected":"")+(popSet.has(key(r,c))?" pop":"");b.dataset.r=r;b.dataset.c=c;b.dataset.special=v?.s||"";if(v){b.style.setProperty("--x",pos[v.t][0]);b.style.setProperty("--y",pos[v.t][1]);if(v.s)b.style.setProperty("--special-hue",specialHue(v.s,v.t))}else b.style.visibility="hidden";b.setAttribute("aria-label",v?`糖果 ${v.t+1}`:"空格");boardEl.appendChild(b)}updateUI()}
+function updateUI(){$("score").textContent=score.toLocaleString();$("moves").textContent=moves;$("level").textContent=level;$("collected").textContent=collected;$("target").textContent=target;$("best").textContent=best.toLocaleString();$("bar").style.width=Math.min(100,score/(5000+level*1800)*100)+"%";const stars=Math.min(3,Math.floor(score/(2200+level*500))+1);$("stars").classList.toggle("on",stars>=3)}
+function adjacent(a,b){return Math.abs(a.r-b.r)+Math.abs(a.c-b.c)===1}
+function swap(a,b){[grid[a.r][a.c],grid[b.r][b.c]]=[grid[b.r][b.c],grid[a.r][a.c]]}
+function runs(){const out=[];for(let r=0;r<N;r++){let c=0;while(c<N){let e=c+1;while(e<N&&grid[r][e]&&grid[r][c]&&grid[r][e].t===grid[r][c].t)e++;if(e-c>=3)out.push({cells:Array.from({length:e-c},(_,i)=>({r,c:c+i})),dir:"H",t:grid[r][c].t});c=e}}for(let c=0;c<N;c++){let r=0;while(r<N){let e=r+1;while(e<N&&grid[e][c]&&grid[r][c]&&grid[e][c].t===grid[r][c].t)e++;if(e-r>=3)out.push({cells:Array.from({length:e-r},(_,i)=>({r:r+i,c})),dir:"V",t:grid[r][c].t});r=e}}return out}
+function expandSpecial(clear){const q=[...clear];while(q.length){const k=q.pop(),[r,c]=rc(k),v=grid[r][c];if(!v?.s)continue;const add=[];if(v.s==="lineH")for(let x=0;x<N;x++)add.push(key(r,x));if(v.s==="lineV")for(let y=0;y<N;y++)add.push(key(y,c));if(v.s==="bomb")for(let y=Math.max(0,r-1);y<=Math.min(N-1,r+1);y++)for(let x=Math.max(0,c-1);x<=Math.min(N-1,c+1);x++)add.push(key(y,x));if(v.s==="rainbow")for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(grid[y][x]?.t===v.t)add.push(key(y,x));for(const x of add)if(!clear.has(x)){clear.add(x);q.push(x)}}}
+async function resolve(preferred){let chain=0;while(true){const found=runs();if(!found.length)break;chain++;const clear=new Set(),create=new Map();for(const run of found){run.cells.forEach(p=>clear.add(key(p.r,p.c)));if(run.cells.length>=4){let p=preferred&&run.cells.some(x=>x.r===preferred.r&&x.c===preferred.c)?preferred:run.cells[Math.floor(run.cells.length/2)];create.set(key(p.r,p.c),{t:run.t,s:run.cells.length>=5?"rainbow":run.dir==="H"?"lineH":"lineV"})}}for(const k of create.keys())clear.delete(k);expandSpecial(clear);for(const k of clear){const[r,c]=rc(k),v=grid[r][c];if(v?.t===targetType)collected++;grid[r][c]=null}for(const[k,v]of create){const[r,c]=rc(k);grid[r][c]=cell(v.t,v.s)}score+=clear.size*100*chain+(create.size*250);beep(420+chain*100,.09);render(clear);await wait(180);drop();render();await wait(170)}if(!hasMove()){shuffle();toast("糖果重新排列囉！")}updateUI()}
+function drop(){for(let c=0;c<N;c++){let w=N-1;for(let r=N-1;r>=0;r--)if(grid[r][c])grid[w--][c]=grid[r][c];while(w>=0)grid[w--][c]=cell(Math.floor(Math.random()*TYPES))}}
+async function trySwap(a,b){if(busy||!adjacent(a,b))return;busy=true;swap(a,b);render();await wait(130);if(!runs().length){swap(a,b);render();beep(160,.12);toast("這樣沒有消除喔")}else{moves--;await resolve(b);checkEnd()}busy=false}
+function hasMove(){for(let r=0;r<N;r++)for(let c=0;c<N;c++)for(const[dR,dC]of[[0,1],[1,0]]){const rr=r+dR,cc=c+dC;if(rr>=N||cc>=N)continue;swap({r,c},{r:rr,c:cc});const ok=runs().length>0;swap({r,c},{r:rr,c:cc});if(ok)return[{r,c},{r:rr,c:cc}]}return null}
+function shuffle(){const all=grid.flat().sort(()=>Math.random()-.5);for(let r=0;r<N;r++)for(let c=0;c<N;c++)grid[r][c]=all[r*N+c];if(runs().length||!hasMove())shuffle();render()}
+function choose(p){if(busy||closed)return;if(!selected){selected=p;render();return}if(selected.r===p.r&&selected.c===p.c){selected=null;render();return}if(adjacent(selected,p)){const a=selected;selected=null;trySwap(a,p)}else{selected=p;render()}}
+function checkEnd(){if(score>best){best=score;localStorage.setItem("tongtong-best",best)}updateUI();if(collected>=target){busy=true;stopMusic();$("winText").textContent=`得到 ${score.toLocaleString()} 分，收集了 ${collected} 顆角色糖果！`;$("winModal").classList.remove("hidden");levelUp()}else if(moves<=0){busy=true;stopMusic();$("loseModal").classList.remove("hidden");beep(140,.4)}}
+function startGame(next=false){closed=false;document.querySelectorAll(".modal").forEach(x=>x.classList.add("hidden"));if(next)level++;moves=Math.max(18,26-level);target=16+level*2;targetType=(level-1)%TYPES;collected=score=0;selected=null;$("targetIcon").style.backgroundPosition=pos[targetType][0]+" "+pos[targetType][1];makeGrid();busy=false;started=true;render();startMusic()}
+function restart(){stopMusic();bgm.currentTime=0;startGame(false)}
+function closeGame(){closed=true;busy=true;stopAllAudio();$("closedModal").classList.remove("hidden");setTimeout(()=>{try{window.close()}catch{}},80)}
+function hint(){const m=hasMove();if(!m)return;for(const p of m){const el=boardEl.querySelector(`[data-r="${p.r}"][data-c="${p.c}"]`);el?.classList.add("hint")}beep(720,.1)}
+function toast(s){const t=$("toast");t.textContent=s;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),1600)}
+function wait(ms){return new Promise(r=>setTimeout(r,ms))}
+function audio(){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;const a=window._tongAudio||(window._tongAudio=new AC());if(a.state==="suspended")a.resume().catch(()=>{});return a}
+function beep(f,d){if(!sound)return;try{const a=audio();if(!a)return;const o=a.createOscillator(),g=a.createGain();o.type="sine";o.frequency.value=f;g.gain.setValueAtTime(.08,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+d);o.connect(g).connect(a.destination);o.start();o.stop(a.currentTime+d)}catch{}}
+function levelUp(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f,.16),i*100))}
+function startMusic(){if(!music||closed||!started)return;const p=bgm.play();if(p?.catch)p.catch(()=>{})}
+function stopMusic(){bgm.pause()}
+function stopAllAudio(){stopMusic();const a=window._tongAudio;if(a&&a.state!=="closed")a.suspend().catch(()=>{})}
+function backgroundPause(){stopAllAudio();busy=true;if(started&&!closed)toast("遊戲已暫停，點提示或糖果繼續")}
+boardEl.addEventListener("pointerdown",e=>{const t=e.target.closest(".tile");if(!t)return;touchStart={r:+t.dataset.r,c:+t.dataset.c,x:e.clientX,y:e.clientY};t.setPointerCapture?.(e.pointerId)});
+boardEl.addEventListener("pointerup",e=>{const t=e.target.closest(".tile"),s=touchStart;touchStart=null;if(!t||!s)return;if(started&&!closed&&document.visibilityState==="visible"&&busy&&moves>0&&!document.querySelector(".modal:not(.hidden)"))busy=false;const dx=e.clientX-s.x,dy=e.clientY-s.y;if(Math.max(Math.abs(dx),Math.abs(dy))>22){const p=Math.abs(dx)>Math.abs(dy)?{r:s.r,c:s.c+(dx>0?1:-1)}:{r:s.r+(dy>0?1:-1),c:s.c};if(p.r>=0&&p.r<N&&p.c>=0&&p.c<N)trySwap({r:s.r,c:s.c},p)}else choose({r:+t.dataset.r,c:+t.dataset.c})});
+$("startBtn").onclick=()=>{audio();startGame(false)};$("restartBtn").onclick=restart;$("hintBtn").onclick=()=>{if(started&&!closed)busy=false;hint()};$("closeBtn").onclick=closeGame;$("reopenBtn").onclick=restart;$("loseAgainBtn").onclick=restart;$("winAgainBtn").onclick=restart;$("nextBtn").onclick=()=>startGame(true);
+$("soundBtn").onclick=()=>{sound=!sound;$("soundBtn").textContent="音效:"+(sound?"開":"關")};$("musicBtn").onclick=()=>{music=!music;$("musicBtn").textContent="音樂:"+(music?"開":"關");if(music)startMusic();else stopMusic()};
+document.addEventListener("visibilitychange",()=>{if(document.hidden)backgroundPause()});window.addEventListener("pagehide",stopAllAudio);window.addEventListener("beforeunload",stopAllAudio);window.addEventListener("freeze",stopAllAudio);
+makeGrid();render();
+})();
+</script>
+</body>
+</html>
